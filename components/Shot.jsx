@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { shot, hostOf } from "@/lib/shot";
 
 /**
@@ -19,6 +19,14 @@ export default function Shot({
 }) {
   const [status, setStatus] = useState("loading"); // loading | loaded | error
 
+  // The shot images are preloaded in <head>, so they're often already complete
+  // by the time React hydrates and attaches onLoad — in which case onLoad never
+  // fires. Check the element on mount so cached/preloaded images still resolve.
+  const imgRef = useCallback((node) => {
+    if (!node || !node.complete) return;
+    setStatus(node.naturalWidth === 0 ? "error" : "loaded");
+  }, []);
+
   const classes = [
     className,
     status === "loading" ? "shot-loading" : "",
@@ -36,6 +44,7 @@ export default function Shot({
     <Tag className={classes} style={errorStyle} {...rest}>
       {status !== "error" && (
         <img
+          ref={imgRef}
           src={shot(site)}
           alt={alt}
           loading="eager"
