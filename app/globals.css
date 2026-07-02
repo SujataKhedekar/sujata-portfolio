@@ -459,6 +459,10 @@ body {
 
 .project-shot--lg { width: 100%; height: clamp(200px, 55vw, 300px); }
 .project-shot--sm { width: 100%; height: clamp(150px, 40vw, 220px); }
+/* Large preview is a portrait/near-square frame while the site screenshots are
+   landscape (1120x718); `contain` shows the whole page instead of cropping the
+   centered hero. The dark frame bg fills the letterbox. */
+.project-shot--lg img { object-fit: contain; }
 @media (min-width:768px){
     .project-shot--lg, .project-shot--sm { height: auto; }
 }
